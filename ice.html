@@ -1,0 +1,861 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w.org/TR/html4/loose.dtd">
+<title>トムリンズクエスト２</title>
+<html lang="ja">
+<meta charset="utf-8">
+<body bgcolor="#000000" style="background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;  text-align:center; font-size: 30px;">
+<script type="text/javascript">
+    document.body.style.backgroundColor = "#000000";            // 背景色を変更
+document.body.style.color = "#ffffff";  // 文字色を変更
+
+var name = localStorage.getItem("name");       // プレイヤーの名前
+var lv = parseInt(localStorage.getItem("lv"));         // プレイヤーのレベル
+var hp = parseInt(localStorage.getItem("hp"));         // プレイヤーのHP
+var mp = parseInt(localStorage.getItem("mp"));         // プレイヤーのMP
+var flame = parseInt(localStorage.getItem("flame"));   // 炎の宝玉
+var ice = parseInt(localStorage.getItem("ice"));       // 氷の宝玉
+var thunder = parseInt(localStorage.getItem("thunder"));  // 雷の宝玉
+
+var monster = 0;							//　モンスターを倒した数
+var boss = 1500;							//　ボスのHP
+var m = 0;
+var d; 
+var n;
+var a;
+var is;
+
+sessionStorage.setItem('px', 22);
+sessionStorage.setItem('py', 23);
+
+var audio1 = new Audio("村.mp3");
+var audio2 = new Audio("雪道.mp3");
+
+preparation();
+
+function preparation(){
+    document.body.style.color = "#ffffff";
+    audio1.loop = 'true';
+    audio1.play();
+    if((ice == 1) || (flame == 0))
+    	flame0();
+    else
+    	flame1();
+}
+
+function flame0(){
+	    backimage("氷の街.jpg");
+	    putreset();
+	    putSpace();
+        putWindow("この街に用はないようだ<br>城に引き返そう。");
+        putButton("NEXT.png", "battle_end3()");
+}
+
+function flame1(){
+    	backimage("氷の街.jpg");
+	    putreset();
+	    putSpace();
+        putWindow(name + "は街にたどり着くことができた。");
+        putButton("NEXT.png", "flame2()");
+}
+
+function flame2(){
+	    putreset();
+	    putSpace();
+        putWindow(name + "は大金持ちの家を見つけ<br>話を聞くことにした。");
+        putButton("NEXT.png", "flame3()");
+}
+
+function flame3(){
+    	backimage("金持ち家.jpg");
+	    putreset();
+        putImage("金持ち.png");
+        putWindow("おじいさん：氷の宝玉か。<br>しかし、タダで渡すわけにはいかん。");
+        putButton("NEXT.png", "flame4()");
+}
+
+function flame4(){
+	    putreset();
+        putImage("金持ち.png");
+        putWindow("おじいさん：そんなに欲しければ、<br>この町からさらに西へ行ったところにある雪山の頂上にある、<br>この世界そのものを氷漬けにできるという伝説の杖と交換してやろう。");
+        putButton("NEXT.png", "flame5()");
+}
+
+function flame5(){
+   		audio1.pause();
+    	audio1.currentTime = 0;
+    	audio2.loop = 'true';
+   		audio2.play();
+		backimage("雪山.jpg");
+	    putreset();
+	    putSpace();
+        putWindow("というわけで"+ name + "は雪山へ向かった。");
+        putButton("NEXT.png", "judgment()");
+}
+
+function judgment(){
+            if(lv < 10){
+                battle1();
+            }else if(lv < 70){
+                battle2();
+            }else{
+                battle3();
+            }
+}
+
+function battle1(){
+            n = Math.random() * 5;
+            n = Math.floor(n) + 1;
+            a = "<div>";
+            is = "<img src=\"氷の魔物.png\">"
+            for (var i = 0; i < n; i += 1){
+                a += is;
+            }
+            a += "</div>";
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("氷の魔物が" + n + "体あらわれた。<br>どうする？");
+            putButton("たたかう.png", "attack1()");
+
+}
+
+function attack1(){
+            d = Math.random() * 20;
+            d = Math.floor(d);
+            addHP(-d);
+            if(hp < 0){
+                hp = 0;
+            }
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "は、" + d + "ダメージを受けた。");
+            putButton("NEXT.png", "judgment1()");
+}
+
+function judgment1(){
+            if(hp == 0){
+                putGameOver();
+            }else{
+            	monster++;
+                lv += n;
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow("氷の魔物の群れを倒した。<br>" + name + "のレベルが" + n + "上がった。");
+                if(lv >= 10){
+                    putButton("NEXT.png", "levelup1()");
+                }else{
+                	if(monster >= 5)
+                    	putButton("NEXT.png", "flame_boss()");
+                    else
+                    	putButton("NEXT.png", "battle1()");
+	            }
+	       }
+}
+
+function levelup1(){
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow(name + "は、「ヒール」を覚えた。<br>「ヒール」はMPを10消費することでHPを全快させる魔法です。");
+                if(monster >= 5)
+                    putButton("NEXT.png", "flame_boss()");
+                else
+                    putButton("NEXT.png", "battle2()");
+}
+
+function battle2(){
+            if(m == 0){
+                n = Math.random() * 5;
+                n = Math.floor(n) + 1;
+                a = "<div>";
+                is = "<img src=\"氷の魔物.png\">"
+                for (var i = 0; i < n; i += 1){
+                    a += is;
+                    }
+                a += "</div>";
+                putreset();
+                put(a);
+                putStatus();
+                putWindow("氷の魔物が" + n + "体あらわれた。<br>どうする？");
+            }else{
+                putreset();
+                put(a);
+                putStatus();
+                putWindow("どうする？");
+            }
+            putButton("たたかう.png", "attack2()");
+            putButton("ヒール.png", "heal2()");
+}
+
+function attack2(){
+            d = Math.random() * 20;
+            d = Math.floor(d);
+            addHP(-d);
+            if(hp < 0){
+                hp = 0;
+            }
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "は、" + d + "ダメージを受けた。");
+            putButton("NEXT.png", "judgment2()");
+}
+
+function heal2(){
+        m = 1;
+        if(mp >= 10){
+            document.body.style.color = "#ffffff";
+            hp = lv + 10;
+            mp -= 10;
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "のHPが" + hp + "に回復した。");
+            putButton("NEXT.png", "battle2()");
+        }else{
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("MPが足りない。");
+            putButton("NEXT.png", "battle2()");
+        }
+}
+
+function judgment2(){
+            m = 0;
+            if(hp == 0){
+                putGameOver();
+            }else{
+                lv += n;
+                monster++;
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow("氷の魔物の群れを倒した。<br>" + name + "のレベルが" + n + "上がった。");
+                if(lv >= 70){
+                    putButton("NEXT.png", "levelup2()");
+                }else{
+                	if(monster >= 5)
+                    	putButton("NEXT.png", "flame_boss()");
+                	else
+                    	putButton("NEXT.png", "battle2()");
+                }
+            }
+}
+
+function levelup2(){
+                m = 0;
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow(name + "は、「サンダー」を覚えた。<br>「サンダー」はMPを30消費することで敵に向かって雷を落とす魔法です。");
+               if(monster >= 5)
+                    putButton("NEXT.png", "flame_boss()");
+               else
+                    putButton("NEXT.png", "battle3()");
+}
+
+function battle3(){
+            if(m == 0){
+                n = Math.random() * 5;
+                n = Math.floor(n) + 1;
+                a = "<div>";
+                is = "<img src=\"氷の魔物.png\">"
+                for (var i = 0; i < n; i += 1){
+                    a += is;
+                    }
+                a += "</div>";
+                putreset();
+                put(a);
+                putStatus();
+                putWindow("氷の魔物が" + n + "体あらわれた。<br>どうする？");
+            }else{
+                putreset();
+                put(a);
+                putStatus();
+                putWindow("どうする？");
+            }
+            putButton("たたかう.png", "attack3()");
+            putButton("ヒール.png", "heal3()");
+            putButton("サンダー.png", "thunder3()");
+}
+
+function attack3(){
+            d = Math.random() * 20;
+            d = Math.floor(d);
+            addHP(-d);
+            if(hp < 0){
+                hp = 0;
+            }
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "は、" + d + "ダメージを受けた。");
+            putButton("NEXT.png", "judgment3()");
+}
+
+function heal3(){
+        m = 1;
+        if(mp >= 10){
+            document.body.style.color = "#ffffff";
+            hp = lv + 10;
+            mp -= 20;
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "のHPが" + hp + "に回復した。");
+            putButton("NEXT.png", "battle3()");
+        }else{
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("MPが足りない。");
+            putButton("NEXT.png", "battle3()");
+        }
+}
+
+function thunder3(){
+        if(mp >= 30){
+            mp -= 30;
+            n = Math.random() * 100;
+            n = Math.floor(n) + 1;
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("なんと！森全体に雷が降り注いだ！<br>" + n + "体の魔物が雷に巻き込まれた。");
+            putButton("NEXT.png", "judgment3()");
+        }else{
+            m = 1;
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("MPが足りない。");
+            putButton("NEXT.png", "battle3()");
+        }
+}
+
+function judgment3(){
+            m = 0;
+            if(hp == 0){
+                putGameOver();
+            }else{
+                lv += n;
+                monster++;
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow("氷の魔物の群れを倒した。<br>" + name + "のレベルが" + n + "上がった。");
+               if(monster >= 5)
+                    putButton("NEXT.png", "flame_boss()");
+               else
+                    putButton("NEXT.png", "battle3()");
+            }
+}
+
+function flame_boss(){
+	 if(lv < 10){
+	 	boss1();
+     }else if(lv < 70){
+        boss2();
+     }else{
+        boss3();
+     }
+}
+
+function boss1(){
+			putreset();
+			putBossImage();
+			putWindow("氷の魔導士があらわれた。");
+			putButton("NEXT.png", "bossbattle1()");
+}
+
+function bossbattle1(){
+			putreset();
+			putBossImage();
+			putStatus();
+			putWindow("どうする？");
+			putButton("たたかう.png", "bossattack1()");
+}
+
+function bossattack1(){
+			var bd = Math.random() * 200;
+			bd = Math.floor(bd);
+			boss -= bd;
+			putreset();	
+			putBossImage();
+			putStatus();
+			putWindow("氷の魔導士に" + bd + "ダメージを与えた。");
+			putButton("NEXT.png", "bosscheck1()");
+}
+
+function bosscheck1(){
+			if(boss <= 0){
+				bossjudgment1();
+			}else{
+				bossturn1();
+			}
+}
+
+function bossturn1(){
+			var r = Math.random() * 4;
+			r = Math.floor(r) + 1;
+			switch(r){
+				case 1:{
+					d = Math.random() * 40;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();	
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士の攻撃！");
+					putButton("NEXT.png", "bossjudgment1()");
+					break;
+				}
+				case 2:{
+					d = Math.random() * 40;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士の攻撃！");
+					putButton("NEXT.png", "bossjudgment1()");
+					break;
+				}
+				case 3:{
+					d = Math.random() * 60;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士は、巨大な氷柱を落としてきた");
+					putButton("NEXT.png", "bossjudgment1()");
+					break;
+				}
+				case 4:{
+					d = Math.random() * 60;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士は、巨大な氷柱を落としてきた");
+					putButton("NEXT.png", "bossjudgment1()");
+					break;
+				}
+			}
+}
+
+
+function bossjudgment1(){
+			putreset();
+			putBossImage();
+			if(boss <= 0){
+				putStatus();
+				putWindow("氷の魔導士を倒した！");
+				putButton("NEXT.png", "battle_end1()");
+			}else{
+				addHP(-d);
+				putStatus();
+				putWindow(name + "は、" + d + "ダメージを受けた。");
+				if(hp == 0){
+					putButton("NEXT.png", "putGameOver()");
+				}else{
+					putButton("NEXT.png", "bossbattle1()");
+				}
+			}
+}	
+
+function boss2(){
+			putreset();
+			putBossImage();
+			putWindow("氷の魔導士があらわれた。");
+			putButton("NEXT.png", "bossbattle2()");
+}
+
+function bossbattle2(){
+			putreset();
+			putBossImage();
+			putStatus();
+			putWindow("どうする？");
+			putButton("たたかう.png", "bossattack2()");
+			putButton("ヒール.png", "bossheal2()");
+}
+
+function bossattack2(){
+			var bd = Math.random() * 200;
+			bd = Math.floor(bd);
+			boss -= bd;
+			putreset();	
+			putBossImage();
+			putStatus();
+			putWindow("氷の魔導士に" + bd + "ダメージを与えた。");
+			putButton("NEXT.png", "bosscheck2()");
+}
+
+function bosscheck2(){
+			if(boss <= 0){
+				bossjudgment2();
+			}else{
+				bossturn2();
+			}
+}
+
+function bossturn2(){
+			var r = Math.random() * 4;
+			r = Math.floor(r) + 1;
+			switch(r){
+				case 1:{
+					d = Math.random() * 40;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();	
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士の攻撃！");
+					putButton("NEXT.png", "bossjudgment2()");
+					break;
+				}
+				case 2:{
+					d = Math.random() * 40;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士の攻撃！");
+					putButton("NEXT.png", "bossjudgment2()");
+					break;
+				}
+				case 3:{
+					d = Math.random() * 60;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士は、巨大な氷柱を落としてきた");
+					putButton("NEXT.png", "bossjudgment2()");
+					break;
+				}
+				case 4:{
+					d = Math.random() * 60;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士は、巨大な氷柱を落としてきた");
+					putButton("NEXT.png", "bossjudgment2()");
+					break;
+				}
+			}
+}
+
+function bossheal2(){
+			if(mp >= 10){
+				document.body.style.color = "#ffffff";
+				hp = lv + 10;
+				mp -= 10;
+				putreset();
+				putBossImage();
+				putStatus();
+				putWindow(name + "のHPが" + hp + "に回復した。");
+				putButton("NEXT.png", "bossbattle2()");
+			}else{
+				putreset();
+				putBossImage();
+				putStatus();
+				putWindow("MPが足りない。");
+				putButton("NEXT.png", "bossbattle2()");
+			}
+}
+
+function bossjudgment2(){
+			putreset();
+			putBossImage();
+			if(boss <= 0){
+				putStatus();
+				putWindow("氷の魔導士を倒した！");
+				putButton("NEXT.png", "battle_end1()");
+			}else{
+				addHP(-d);
+				putStatus();
+				putWindow(name + "は、" + d + "ダメージを受けた。");
+				if(hp == 0){
+					putButton("NEXT.png", "putGameOver()");
+				}else{
+					putButton("NEXT.png", "bossbattle2()");
+				}
+			}
+}	
+
+function boss3(){
+			putreset();
+			putBossImage();
+			putWindow("氷の魔導士があらわれた。");
+			putButton("NEXT.png", "bossbattle3()");
+}
+
+function bossbattle3(){
+			putreset();
+			putBossImage();
+			putStatus();
+			putWindow("どうする？");
+			putButton("たたかう.png", "bossattack3()");
+			putButton("ヒール.png", "bossheal3()");
+            putButton("サンダー.png", "bossthunder3()");
+}
+
+function bossattack3(){
+			var bd = Math.random() * 200;
+			bd = Math.floor(bd);
+			boss -= bd;
+			putreset();	
+			putBossImage();
+			putStatus();
+			putWindow("氷の魔導士に" + bd + "ダメージを与えた。");
+			putButton("NEXT.png", "bosscheck3()");
+}
+
+function bossthunder3(){
+			if(mp >= 30){
+				mp -= 30;
+				var bd = Math.random() * 1000;
+				bd = Math.floor(bd);
+				boss -= bd;
+				putreset();
+				putBossImage();
+				putStatus();
+				putWindow("氷の魔導士に雷が降り注ぐ！<br>氷の魔導士に" + bd + "ダメージを与えた。");
+				putButton("NEXT.png", "bosscheck3()");
+			}else{
+				putreset();
+				putBossImage();
+				putStatus();
+				putWindow("MPが足りない。");
+				putButton("NEXT.png", "bossbattle3()");
+			}
+}
+
+function bosscheck3(){
+			if(boss <= 0){
+				bossjudgment3();
+			}else{
+				bossturn3();
+			}
+}
+
+function bossturn3(){
+			var r = Math.random() * 4;
+			r = Math.floor(r) + 1;
+			switch(r){
+				case 1:{
+					d = Math.random() * 40;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();	
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士の攻撃！");
+					putButton("NEXT.png", "bossjudgment3()");
+					break;
+				}
+				case 2:{
+					d = Math.random() * 40;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士の攻撃！");
+					putButton("NEXT.png", "bossjudgment3()");
+					break;
+				}
+				case 3:{
+					d = Math.random() * 60;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士は、巨大な氷柱を落としてきた");
+					putButton("NEXT.png", "bossjudgment3()");
+					break;
+				}
+				case 4:{
+					d = Math.random() * 60;
+					d = Math.floor(d);
+					if(hp < 0){
+						hp = 0;
+					}
+					putreset();
+					putBossImage();
+					putStatus();
+					putWindow("氷の魔導士は、巨大な氷柱を落としてきた");
+					putButton("NEXT.png", "bossjudgment3()");
+					break;
+				}
+			}
+}
+
+function bossheal3(){
+			if(mp >= 10){
+				document.body.style.color = "#ffffff";
+				hp = lv + 10;
+				mp -= 10;
+				putreset();
+				putBossImage();
+				putStatus();
+				putWindow(name + "のHPが" + hp + "に回復した。");
+				putButton("NEXT.png", "bossbattle3()");
+			}else{
+				putreset();
+				putBossImage();
+				putStatus();
+				putWindow("MPが足りない。");
+				putButton("NEXT.png", "bossbattle3()");
+			}
+}
+
+function bossjudgment3(){
+			putreset();
+			putBossImage();
+			if(boss <= 0){
+				putStatus();
+				putWindow("氷の魔導士を倒した！");
+				putButton("NEXT.png", "battle_end1()");
+			}else{
+				addHP(-d);
+				putStatus();
+				putWindow(name + "は、" + d + "ダメージを受けた。");
+				if(hp == 0){
+					putButton("NEXT.png", "putGameOver()");
+				}else{
+					putButton("NEXT.png", "bossbattle3()");
+				}
+			}
+}	
+
+function battle_end1(){
+	    putreset();
+	    putSpace();
+        putWindow(name + "は見事に伝説の杖を見つけることができた。");
+        putButton("NEXT.png", "battle_end2()");
+}
+
+function battle_end2(){
+		ice = 1;
+		document.body.style.backgroundImage = "";
+	    putreset();
+	    putSpace();
+        putWindow("そして、なんとか杖と氷の宝玉を交換することができたので、<br>城に引き返そう。");
+        putButton("NEXT.png", "battle_end3()");
+}
+
+function battle_end3(){
+    localStorage.setItem("lv", lv);
+    localStorage.setItem("hp", hp);
+    localStorage.setItem("mp", mp);
+    localStorage.setItem("ice", ice);
+    location.href = "castle.html";
+}
+
+function putWindow(str){
+    put("<div style=\"border:3px solid #ffffff; background:#000000;  border-radius:6px; text-align:left;\">" + str + "<div style = \"text-align:center\">▼</div>" + "</div>");
+}
+
+function putCenterWindow(str){
+    put("<div style=\"border:3px solid #ffffff; background:#000000;  border-radius:6px; text-align:center;\">" + str + "</div>");
+}
+
+function putStatus(){
+    putCenterWindow(name + "　Lv" + lv + "　HP" + hp + "　MP" + mp);
+}
+
+function putButton(str1, str2){
+    put("<button type=\"button\" style=\"background-color:#000000;\" onClick=\"" + str2 + "\"><IMG src=\"" + str1 + "\" width=\"190\" height=\"45\" border=\"0\"></button>");
+}
+
+function putImage(str){
+    put("<br><br><img src=\"" + str + "\"><br>");
+}
+
+function putBossImage(){
+    put("<img src=\"氷の魔導士.png\"><br>");
+}
+
+function putSpace(){
+    put("<br><br><br><br>");
+}
+
+function putGameOver(){
+    document.body.style.color = "#ff3300";
+    putreset();
+    putSpace();
+    putStatus();
+    document.body.style.backgroundImage = "";
+    putWindow("GAME OVER<br>" + name + "は、力尽きてしまった。<br>「NEXT」ボタンでタイトルにもどります。" );
+    putButton("NEXT.png", "next()");
+}
+
+function next(){
+    location.href = "index.html";
+}
+
+function putNameInput(){
+    putCenterWindow("<form name=\"js\">右の枠の中に入力してください。<input type=\"text\" name=\"txtb\" value=\"\" onkeypress=\"disp(event.keyCode);\"><input type=\"text\" style=\"visibility:hidden\"></form>");
+}
+
+function put(str){
+    document.body.innerHTML += str + "<br>";
+}
+
+function putreset(){
+    document.body.innerHTML = "";
+}
+
+function backimage(str){
+    document.body.style.backgroundImage = "url(" + str + ")";
+}
+
+
+function addHP(val){
+    hp += val;
+    if (hp <= 0){
+        hp = 0;
+        document.body.style.color = "#ff3300";
+    }else if((lv + 10) / 4 > hp){
+        document.body.style.color = "#ffaa00";
+    }else{
+        document.body.style.color = "#ffffff";
+    }
+}
+
+</script>
+</body>
+</html>

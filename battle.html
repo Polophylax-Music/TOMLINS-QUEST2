@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w.org/TR/html4/loose.dtd">
+<title>トムリンズクエスト２</title>
+<html lang="ja">
+<meta charset="utf-8">
+<body bgcolor="#000000" style="background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;  text-align:center; font-size: 30px;">
+<script type="text/javascript">
+    document.body.style.backgroundColor = "#000000";            // 背景色を変更
+document.body.style.color = "#ffffff";  // 文字色を変更
+
+var name = localStorage.getItem("name");       // プレイヤーの名前
+var lv = parseInt(localStorage.getItem("lv"));         // プレイヤーのレベル
+var hp = parseInt(localStorage.getItem("hp"));         // プレイヤーのHP
+var mp = parseInt(localStorage.getItem("mp"));         // プレイヤーのMP
+var flame = parseInt(localStorage.getItem("flame"));   // 炎の宝玉
+var ice = parseInt(localStorage.getItem("ice"));       // 氷の宝玉
+var thunder = parseInt(localStorage.getItem("thunder"));  // 雷の宝玉
+
+var m = 0;
+var audio1 = new Audio("ザコ戦.mp3");
+
+preparation();
+
+function preparation(){
+    document.body.style.color = "#ffffff";
+    audio1.loop = 'true';
+    audio1.play();
+    backimage("森背景.jpg");
+    jugement();
+}
+
+function jugement(){
+            if(lv < 10){
+                battle1();
+            }else if(lv < 70){
+                battle2();
+            }else{
+                battle3();
+            }
+}
+
+function battle1(){
+            n = Math.random() * 5;
+            n = Math.floor(n) + 1;
+            a = "<div>";
+            is = "<img src=\"スライム.png\">"
+            for (var i = 0; i < n; i += 1){
+                a += is;
+            }
+            a += "</div>";
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("敵が" + n + "体あらわれた。<br>どうする？");
+            putButton("たたかう.png", "attack1()");
+
+}
+
+function attack1(){
+            d = Math.random() * 5;
+            d = Math.floor(d);
+            addHP(-d);
+            if(hp < 0){
+                hp = 0;
+            }
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "は、" + d + "ダメージを受けた。");
+            putButton("NEXT.png", "judgment1()");
+}
+
+function judgment1(){
+            if(hp == 0){
+                putGameOver();
+            }else{
+                lv += n;
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow("魔物の群れを倒した。<br>" + name + "のレベルが" + n + "上がった。");
+                if(lv >= 10){
+                    putButton("NEXT.png", "levelup1()");
+                }else{
+                    putButton("NEXT.png", "battle_end()");
+                }
+            }
+}
+
+function levelup1(){
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow(name + "は、「ヒール」を覚えた。<br>「ヒール」はMPを10消費することでHPを全快させる魔法です。");
+                putButton("NEXT.png", "battle_end()");
+}
+
+function battle2(){
+            if(m == 0){
+                n = Math.random() * 5;
+                n = Math.floor(n) + 1;
+                a = "<div>";
+                is = "<img src=\"スライム.png\">"
+                for (var i = 0; i < n; i += 1){
+                    a += is;
+                    }
+                a += "</div>";
+                putreset();
+                put(a);
+                putStatus();
+                putWindow("敵が" + n + "体あらわれた。<br>どうする？");
+            }else{
+                putreset();
+                put(a);
+                putStatus();
+                putWindow("どうする？");
+            }
+            putButton("たたかう.png", "attack2()");
+            putButton("ヒール.png", "heal2()");
+}
+
+function attack2(){
+            d = Math.random() * 5;
+            d = Math.floor(d);
+            addHP(-d);
+            if(hp < 0){
+                hp = 0;
+            }
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "は、" + d + "ダメージを受けた。");
+            putButton("NEXT.png", "judgment2()");
+}
+
+function heal2(){
+        m = 1;
+        if(mp >= 10){
+            document.body.style.color = "#ffffff";
+            hp = lv + 10;
+            mp -= 10;
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "のHPが" + hp + "に回復した。");
+            putButton("NEXT.png", "battle2()");
+        }else{
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("MPが足りない。");
+            putButton("NEXT.png", "battle2()");
+        }
+}
+
+function judgment2(){
+            m = 0;
+            if(hp == 0){
+                putGameOver();
+            }else{
+                lv += n;
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow("魔物の群れを倒した。<br>" + name + "のレベルが" + n + "上がった。");
+                if(lv >= 70){
+                    putButton("NEXT.png", "levelup2()");
+                }else{
+                    putButton("NEXT.png", "battle_end()");
+                }
+            }
+}
+
+function levelup2(){
+                m = 0;
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow(name + "は、「サンダー」を覚えた。<br>「サンダー」はMPを30消費することで敵に向かって雷を落とす魔法です。");
+                putButton("NEXT.png", "battle_end()");
+}
+
+function battle3(){
+            if(m == 0){
+                n = Math.random() * 5;
+                n = Math.floor(n) + 1;
+                a = "<div>";
+                is = "<img src=\"スライム.png\">"
+                for (var i = 0; i < n; i += 1){
+                    a += is;
+                    }
+                a += "</div>";
+                putreset();
+                put(a);
+                putStatus();
+                putWindow("敵が" + n + "体あらわれた。<br>どうする？");
+            }else{
+                putreset();
+                put(a);
+                putStatus();
+                putWindow("どうする？");
+            }
+            putButton("たたかう.png", "attack3()");
+            putButton("ヒール.png", "heal3()");
+            putButton("サンダー.png", "thunder3()");
+}
+
+function attack3(){
+            d = Math.random() * 5;
+            d = Math.floor(d);
+            addHP(-d);
+            if(hp < 0){
+                hp = 0;
+            }
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "は、" + d + "ダメージを受けた。");
+            putButton("NEXT.png", "judgment3()");
+}
+
+function heal3(){
+        m = 1;
+        if(mp >= 10){
+            document.body.style.color = "#ffffff";
+            hp = lv + 10;
+            mp -= 10;
+            putreset();
+            put(a);
+            putStatus();
+            putWindow(name + "のHPが" + hp + "に回復した。");
+            putButton("NEXT.png", "battle3()");
+        }else{
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("MPが足りない。");
+            putButton("NEXT.png", "battle3()");
+        }
+}
+
+function thunder3(){
+        if(mp >= 30){
+            mp -= 30;
+            n = Math.random() * 100;
+            n = Math.floor(n) + 1;
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("なんと！森全体に雷が降り注いだ！<br>" + n + "体の魔物が雷に巻き込まれた。");
+            putButton("NEXT.png", "judgment3()");
+        }else{
+            m = 1;
+            putreset();
+            put(a);
+            putStatus();
+            putWindow("MPが足りない。");
+            putButton("NEXT.png", "battle3()");
+        }
+}
+
+function judgment3(){
+            m = 0;
+            if(hp == 0){
+                putGameOver();
+            }else{
+                lv += n;
+                putreset();
+                putSpace();
+                putStatus();
+                putWindow("魔物の群れを倒した。<br>" + name + "のレベルが" + n + "上がった。");
+                putButton("NEXT.png", "battle_end()");
+            }
+}
+
+function battle_end(){
+    localStorage.setItem("lv", lv);
+    localStorage.setItem("hp", hp);
+    localStorage.setItem("mp", mp);
+    location.href = "field.html";
+}
+function putWindow(str){
+    put("<div style=\"border:3px solid #ffffff; background:#000000;  border-radius:6px; text-align:left;\">" + str + "<div style = \"text-align:center\">▼</div>" + "</div>");
+}
+
+function putCenterWindow(str){
+    put("<div style=\"border:3px solid #ffffff; background:#000000;  border-radius:6px; text-align:center;\">" + str + "</div>");
+}
+
+function putStatus(){
+    putCenterWindow(name + "　Lv" + lv + "　HP" + hp + "　MP" + mp);
+}
+
+function putButton(str1, str2){
+    put("<button type=\"button\" style=\"background-color:#000000;\" onClick=\"" + str2 + "\"><IMG src=\"" + str1 + "\" width=\"190\" height=\"45\" border=\"0\"></button>");
+}
+
+function putImage(str){
+    put("<br><br><img src=\"" + str + "\"><br>");
+}
+
+function putBossImage(){
+    put("<img src=\"ラスボス.png\"><br>");
+}
+
+function putSpace(){
+    put("<br><br><br><br>");
+}
+
+function putGameOver(){
+    document.body.style.color = "#ff3300";
+    putreset();
+    putSpace();
+    putStatus();
+    document.body.style.backgroundImage = "";
+    putWindow("GAME OVER<br>" + name + "は、力尽きてしまった。<br>「NEXT」ボタンでタイトルにもどります。" );
+    putButton("NEXT.png", "next()");
+}
+
+function next(){
+    location.href = "index.html";
+}
+
+function putNameInput(){
+    putCenterWindow("<form name=\"js\">右の枠の中に入力してください。<input type=\"text\" name=\"txtb\" value=\"\" onkeypress=\"disp(event.keyCode);\"><input type=\"text\" style=\"visibility:hidden\"></form>");
+}
+
+function put(str){
+    document.body.innerHTML += str + "<br>";
+}
+
+function putreset(){
+    document.body.innerHTML = "";
+}
+
+function backimage(str){
+    document.body.style.backgroundImage = "url(" + str + ")";
+}
+
+
+function addHP(val){
+    hp += val;
+    if (hp <= 0){
+        hp = 0;
+        document.body.style.color = "#ff3300";
+    }else if((lv + 10) / 4 > hp){
+        document.body.style.color = "#ffaa00";
+    }else{
+        document.body.style.color = "#ffffff";
+    }
+}
+
+</script>
+</body>
+</html>

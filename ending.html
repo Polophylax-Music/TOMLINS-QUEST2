@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w.org/TR/html4/loose.dtd">
+<title>トムリンズクエスト２</title>
+<html lang="ja">
+<meta charset="utf-8">
+<body bgcolor="#000000" style="background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;  text-align:center; font-size: 30px;">
+<script type="text/javascript">
+    document.body.style.backgroundColor = "#000000";            // 背景色を変更
+document.body.style.color = "#ffffff";  // 文字色を変更
+
+var name = localStorage.getItem("name");       // プレイヤーの名前
+var lv = parseInt(localStorage.getItem("lv"));         // プレイヤーのレベル
+var hp = parseInt(localStorage.getItem("hp"));         // プレイヤーのHP
+var mp = parseInt(localStorage.getItem("mp"));         // プレイヤーのMP
+var flame = parseInt(localStorage.getItem("flame"));   // 炎の宝玉
+var ice = parseInt(localStorage.getItem("ice"));       // 氷の宝玉
+var thunder = parseInt(localStorage.getItem("thunder"));  // 雷の宝玉
+
+sessionStorage.setItem('px', 22);
+sessionStorage.setItem('py', 23);
+
+var audio1 = new Audio("エンディング.mp3");
+
+preparation();
+
+function preparation(){
+    document.body.style.color = "#ffffff";
+    audio1.loop = 'true';
+    audio1.play();
+    castle1();
+}
+
+function castle1(){
+        backimage("城背景.jpg");
+        putreset();
+        putSpace();
+        putWindow("どこからか不思議な声が聞こえる。");
+        putButton("NEXT.png", "castle2()");
+}
+
+function castle2(){
+        putreset();
+        putSpace();
+        putWindow("どうやら再び魔王から分離した３つの宝玉が話しかけているようだ。");
+        putButton("NEXT.png", "castle3()");
+}
+
+function castle3(){
+        putreset();
+        putSpace();
+        putWindow("３つの宝玉：ありがとう。勇者" + name + "よ。");
+        putButton("NEXT.png", "castle4()");
+}
+
+function castle4(){
+    putreset();
+    putSpace();
+    putWindow("３つの宝玉：私たちは、一時的に魔王の呪いの力が弱まり、自由の身となりました。");
+    putButton("NEXT.png", "castle5()");
+}
+
+function castle5(){
+    putreset();
+    putSpace();
+    putWindow("３つの宝玉：私たちの力で、再び魔王がこの城から出られないように封印します。");
+    putButton("NEXT.png", "castle6()");
+}
+
+function castle6(){
+    putreset();
+    putSpace();
+    putWindow("３つの宝玉：ついでにあなたも現実の世界に送り届けて差し上げましょう。");
+    putButton("NEXT.png", "castle7()");
+}
+
+function castle7(){
+    putreset();
+    putSpace();
+    putWindow("GAME CLEAR!!");
+    putButton("NEXT.png", "credit()");
+}
+
+function credit(){
+            document.body.style.backgroundImage = "";
+            putreset();
+            put("<br><br>");
+            put("画像提供");
+            put("「Ｒド」");
+            put("「誰そ彼亭」");
+            put("「ぴぽや」");
+            put("<br>");
+            put("音楽提供");
+            put("「甘茶の音楽工房」");
+            put("<br>");
+            putButton("NEXT.png", "GameClear0()");
+}
+
+function GameClear0(){
+    putreset();
+    putSpace();
+    putWindow("お疲れ様でした。<br>「NEXT」ボタンでタイトルにもどります。<br>「CONTINUE」で今のレベルでゲームを最初からプレイすることができます。");
+    putButton("NEXT.png", "castle_end()");
+}
+
+function castle_end(){
+    flame = 0;
+    ice = 0;
+    thunder = 0;
+    var gameclear = 1;
+    localStorage.setItem("name", name);
+    localStorage.setItem("lv", lv);
+    localStorage.setItem("flame", flame);
+    localStorage.setItem("ice", ice);
+    localStorage.setItem("thunder", thunder);
+    localStorage.setItem("hp", hp);
+    localStorage.setItem("mp", mp);
+    localStorage.setItem("gameclear", gameclear);
+    location.href = "index.html";
+}
+
+function putWindow(str){
+    put("<div style=\"border:3px solid #ffffff; background:#000000;  border-radius:6px; text-align:left;\">" + str + "<div style = \"text-align:center\">▼</div>" + "</div>");
+}
+
+function putCenterWindow(str){
+    put("<div style=\"border:3px solid #ffffff; background:#000000;  border-radius:6px; text-align:center;\">" + str + "</div>");
+}
+
+function putStatus(){
+    putCenterWindow(name + "　Lv" + lv + "　HP" + hp + "　MP" + mp);
+}
+
+function putButton(str1, str2){
+    put("<button type=\"button\" style=\"background-color:#000000;\" onClick=\"" + str2 + "\"><IMG src=\"" + str1 + "\" width=\"190\" height=\"45\" border=\"0\"></button>");
+}
+
+function putImage(str){
+    put("<br><br><img src=\"" + str + "\"><br>");
+}
+
+function putBossImage(){
+    put("<img src=\"ラスボス.png\"><br>");
+}
+
+function putSpace(){
+    put("<br><br><br><br>");
+}
+
+function putGameOver(){
+    document.body.style.color = "#ff3300";
+    putreset();
+    putSpace();
+    putStatus();
+    document.body.style.backgroundImage = "";
+    putWindow("GAME OVER<br>" + name + "は、力尽きてしまった。<br>「NEXT」ボタンでタイトルにもどります。" );
+    putButton("NEXT.png", "next()");
+}
+
+function next(){
+    location.href = "index.html";
+}
+
+function putNameInput(){
+    putCenterWindow("<form name=\"js\">右の枠の中に入力してください。<input type=\"text\" name=\"txtb\" value=\"\" onkeypress=\"disp(event.keyCode);\"><input type=\"text\" style=\"visibility:hidden\"></form>");
+}
+
+function put(str){
+    document.body.innerHTML += str + "<br>";
+}
+
+function putreset(){
+    document.body.innerHTML = "";
+}
+
+function backimage(str){
+    document.body.style.backgroundImage = "url(" + str + ")";
+}
+
+
+function addHP(val){
+    hp += val;
+    if (hp <= 0){
+        hp = 0;
+        document.body.style.color = "#ff3300";
+    }else if((lv + 10) / 4 > hp){
+        document.body.style.color = "#ffaa00";
+    }else{
+        document.body.style.color = "#ffffff";
+    }
+}
+
+</script>
+</body>
+</html>
